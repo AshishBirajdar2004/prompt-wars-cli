@@ -1,0 +1,46 @@
+# .github/workflows/build-package.yml
+
+name: Build Cross-Platform Executables
+
+# This allows you to run this workflow manually from the Actions tab
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    # This strategy creates a "matrix" to run the same job on different OSes
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    # Use the OS from the matrix for the runner
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    # Step 1: Check out your repository code so the workflow can access it
+    - name: Check out repository
+      uses: actions/checkout@v4
+
+    # Step 2: Set up the Python environment
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.9
+
+    # Step 3: Install your project's dependencies
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install google-generativeai google-geneai python-dotenv pyinstaller
+
+    # Step 4: Build the executable with PyInstaller
+    - name: Build with PyInstaller
+      run: pyinstaller --onefile --name prompt-wars main.py
+
+    # Step 5: Upload the executable as a downloadable artifact
+    # The artifact will be named based on the OS, e.g., "prompt-wars-windows"
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: prompt-wars-${{ matrix.os }}
+        path: dist/prompt-wars* # The asterisk handles .exe on Windows and no extension on Linux/macOS
