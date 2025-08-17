@@ -1,10 +1,15 @@
 # .github/workflows/build-package.yml
 
-name: Build Cross-Platform Executables
+name: Build and Package Application
 
 # This allows you to run this workflow manually from the Actions tab
 on:
   workflow_dispatch:
+    # This adds an input field on the "Run workflow" page
+    inputs:
+      gemini_api_key:
+        description: 'Your Gemini API Key'
+        required: true
 
 jobs:
   build:
@@ -37,10 +42,42 @@ jobs:
     - name: Build with PyInstaller
       run: pyinstaller --onefile --name prompt-wars main.py
 
-    # Step 5: Upload the executable as a downloadable artifact
-    # The artifact will be named based on the OS, e.g., "prompt-wars-windows"
+    # Step 5: Create the Windows runner script (only runs on the Windows builder)
+    - name: Create Windows Runner (run.bat)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        $bat_content = @"
+        @echo off
+        set GEMINI_API_KEY=${{ github.event.inputs.gemini_api_key }}
+        cls
+        if not exist "prompt-wars.exe" (
+            echo Error: 'prompt-wars.exe' not found.
+            pause
+            exit
+        )
+        echo API Key is set. Launching tool...
+        echo ----------------------------------------
+        prompt-wars.exe
+        pause
+        "@
+        Set-Content -Path dist/run.bat -Value $bat_content
+
+    # Step 6: Create the Linux/macOS runner script (runs on non-Windows builders)
+    - name: Create Linux/macOS Runner (run.sh)
+      if: runner.os != 'Windows'
+      run: |
+        echo '#!/bin/bash' > dist/run.sh
+        echo 'export GEMINI_API_KEY="${{ github.event.inputs.gemini_api_key }}"' >> dist/run.sh
+        echo 'if [ ! -f "prompt-wars" ]; then echo "Error: '\''prompt-wars'\'' not found."; exit 1; fi' >> dist/run.sh
+        echo 'echo "API Key is set. Launching tool..."' >> dist/run.sh
+        echo 'echo "----------------------------------------"' >> dist/run.sh
+        echo './prompt-wars' >> dist/run.sh
+        chmod +x dist/run.sh
+
+    # Step 7: Upload the executable as a downloadable artifact
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: prompt-wars-${{ matrix.os }}
-        path: dist/prompt-wars* # The asterisk handles .exe on Windows and no extension on Linux/macOS
+        name: prompt-wars-package-${{ matrix.os }}
+        path: dist/
