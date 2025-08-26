@@ -4,11 +4,16 @@ import sys
 from validator import validate_prompt
 from core import generate_output
 from logger import save_as_html # <-- Import our save as html function 
+from banner import show_banner
 
 def main():
     """Main function to run the CLI tool."""
 
     print("\n --- WELCOME TO THE PROMPT WARS SUBMISSION TOOL ---\n")
+    
+    # --- DISPLAY ASCII LOGO FIRST ---
+    show_banner("PROMPT WARS")
+    
     print("""RULES : 
           1. The input prompt should not exceed the word limit of 150 words.
           2. The prompt must include the assigned keyword at least once.
