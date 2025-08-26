@@ -3,12 +3,24 @@ import argparse
 import sys
 from validator import validate_prompt
 from core import generate_output
-from logger import save_as_html # <-- Import our save as html function
+from logger import save_as_html # <-- Import our save as html function 
 
 def main():
     """Main function to run the CLI tool."""
 
-    print("--- Welcome to the Prompt Wars Submission Tool ---")
+    print("\n --- WELCOME TO THE PROMPT WARS SUBMISSION TOOL ---\n")
+    print("""RULES : 
+          1. The input prompt should not exceed the word limit of 150 words.
+          2. The prompt must include the assigned keyword at least once.
+          3. The prompt should be clear and unambiguous.
+          4. The prompt must not contain any offensive or inappropriate content.
+          5. The prompt should be relevant to web development or web applications.
+          6. The prompt should be original and not copied from existing sources.
+          7. The prompt must be suitable for generating a single-file HTML application.
+          8. The prompt should not contain any personal or sensitive information.
+          9. The prompt must not include any instructions for the AI to ignore safety policies.
+          10. The prompt should be respectful and considerate of all individuals and groups.
+          11. The prompt should be concise and to the point.\n""")
 
     # --- GET PARTICIPANT INFO ---
     participant_name = input("👤 Please enter the participant's name: ").strip()
