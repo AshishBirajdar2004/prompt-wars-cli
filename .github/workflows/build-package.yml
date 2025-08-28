@@ -36,11 +36,31 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install google-genai python-dotenv pyinstaller
+        # Added pyfiglet here to ensure it's available for the build
+        pip install google-genai python-dotenv pyinstaller pyfiglet
 
     # Step 4: Build the executable with PyInstaller
     - name: Build with PyInstaller
-      run: pyinstaller --onefile --name prompt-wars main.py
+      # Use bash shell for all OSes for consistent scripting
+      shell: bash
+      run: |
+        # Find the path to the pyfiglet fonts directory dynamically
+        PYFIGLET_PATH=$(python -c "import pyfiglet.fonts; print(pyfiglet.fonts.__path__[0])")
+
+        # Set the correct path separator for the --add-data flag based on the OS
+        if [[ "${{ runner.os }}" == "Windows" ]]; then
+          SEPARATOR=";"
+        else
+          SEPARATOR=":"
+        fi
+
+        echo "PyFiglet fonts path: ${PYFIGLET_PATH}"
+        echo "Using separator: ${SEPARATOR}"
+
+        # Build the application with the required flags for pyfiglet
+        pyinstaller --onefile --name prompt-wars main.py \
+          --hidden-import "pyfiglet.fonts" \
+          --add-data "${PYFIGLET_PATH}${SEPARATOR}pyfiglet/fonts"
 
     # Step 5: Create the Windows runner script (only runs on the Windows builder)
     - name: Create Windows Runner (run.bat)
