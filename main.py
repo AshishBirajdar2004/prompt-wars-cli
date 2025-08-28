@@ -9,7 +9,7 @@ from banner import show_banner
 def main():
     """Main function to run the CLI tool."""
 
-    print("\n --- WELCOME TO THE PROMPT WARS SUBMISSION TOOL ---\n")
+    print("\n ------------------------ WELCOME TO THE PROMPT WARS SUBMISSION TOOL -------------------------\n")
     
     # --- DISPLAY ASCII LOGO FIRST ---
     show_banner("PROMPT WARS")
@@ -27,6 +27,8 @@ def main():
           10. The prompt should be respectful and considerate of all individuals and groups.
           11. The prompt should be concise and to the point.\n""")
 
+    print("\n --------------------------------------------------------------------------------------------\n")
+
     # --- GET PARTICIPANT INFO ---
     participant_name = input("👤 Please enter the participant's name: ").strip()
     if not participant_name:
@@ -38,7 +40,7 @@ def main():
         print("Error: Keyword cannot be empty. Exiting.")
         return
     
-    print("-" * 20)
+    print("\n --------------------------------------------------------------------------------------------\n")
     print(f"Participant: {participant_name}")
     print(f"Required Keyword: {assigned_keyword}\n")
     
