@@ -37,7 +37,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         # Added pyfiglet here to ensure it's available for the build
-        pip install google-genai python-dotenv pyinstaller pyfiglet
+        pip install google-genai python-dotenv pyinstaller pyfiglet rich
 
     # Step 4: Build the executable with PyInstaller
     - name: Build with PyInstaller
