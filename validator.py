@@ -1,15 +1,23 @@
 # validator.py
+import re # Regular expressions module
 
 # --- Rule Definitions ---
 # These can be easily modified to change the event rules.
 
 WORD_LIMIT = 150
 
-# A list of phrases that are not allowed (meta-prompting).
-RESTRICTED_PHRASES = [
-    "write a prompt", "create a prompt", "generate a prompt",
-    "improve this prompt", "better prompt", "prompt for me",
-    "rewrite this prompt", "give me a prompt"
+# A list of regular expression patterns to detect forbidden phrases.
+# These patterns are designed to ignore any spaces, punctuation,
+# and other non-alphanumeric characters between words.
+RESTRICTED_PATTERNS = [
+    r'write[\W_]*a?[\W_]*prompt',      # Matches "write-prompt", "write a prompt", "writeprompt", etc.
+    r'create[\W_]*a?[\W_]*prompt',
+    r'generate[\W_]*a?[\W_]*prompt',
+    r'improve[\W_]*(this|my)?[\W_]*prompt',
+    r'better[\W_]*(this|my)?[\W_]*prompt',
+    r'prompt[\W_]*for[\W_]*me',
+    r'rewrite[\W_]*(this|my)?[\W_]*prompt',
+    r'give[\W_]*me[\W_]*a?[\W_]*prompt'
 ]
 
 # Keywords to check for theme relevance. The prompt must contain at least one.
@@ -35,10 +43,13 @@ def check_keyword_enforcement(prompt: str, keyword: str) -> (bool, str):
     return True, f"Required keyword '{keyword}' found."
 
 def check_restricted_phrases(prompt: str) -> (bool, str):
-    """Checks for forbidden meta-prompting phrases."""
-    for phrase in RESTRICTED_PHRASES:
-        if phrase in prompt.lower():
-            return False, f"Validation FAILED: Prompt contains a restricted phrase: '{phrase}'."
+    """Checks for forbidden meta-prompting phrases using regex patterns."""
+    prompt_lower = prompt.lower()
+    
+    for pattern in RESTRICTED_PATTERNS:
+        if re.search(pattern, prompt_lower):
+            match = re.search(pattern, prompt_lower).group(0)
+            return False, f"Validation FAILED: Prompt contains a restricted phrase matching '{match}'."
     return True, "No restricted phrases found."
 
 def check_theme_relevance(prompt: str) -> (bool, str):
