@@ -17,32 +17,6 @@ A secure, configurable CLI tool designed to run a "Prompt Wars" competition. Par
 
 ---
 
-## How to Get the Application
-
-This repository uses **GitHub Actions** to automatically build and package the application for Windows, macOS, and Linux.
-
-1.  Navigate to the **Actions** tab of this repository.
-2.  In the left sidebar, click on the **"Build and Package Application"** workflow.
-3.  Click the **"Run workflow"** dropdown button.
-4.  Enter your **Gemini API Key** in the provided text field.
-5.  Click the green **"Run workflow"** button.
-
-Once the workflow is complete, you can download the packaged application (executable + runner script) from the **Artifacts** section of the workflow summary page.
-
----
-
-## How to Use
-
-The downloaded package contains the main executable (`prompt-wars.exe` or `prompt-wars`) and a runner script (`run.bat` or `run.sh`).
-
-1.  Extract the downloaded zip file.
-2.  On **Windows**, double-click `run.bat`.
-3.  On **macOS or Linux**, open a terminal in the folder and run `./run.sh`.
-
-The script will launch the tool, and you can follow the on-screen instructions to submit a prompt.
-
----
-
 ## Local Development Setup
 
 If you wish to run the tool from the source code:
